@@ -18,9 +18,8 @@ RUN_KEYS = ("run_id", "task", "executor")
 LIFECYCLE_TYPES = {"standing", "temporary", "focused", "conditional"}
 EMPTY_VALUES = {"", "null", "~", "[]", "{}"}
 TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]*")
+RESERVED_TASK_REFS = {"direct-request"}
 FM_RE = re.compile(r"\A---\n(.*?)\n---(?:\n|$)", re.S)
-# Support angle-delimited destinations, optional titles, and one nested
-# parenthesis pair in ordinary destinations. More complex paths can use <...>.
 DEST = r"""(?:<[^>\n]*>|(?:[^\s()]+|\([^()\n]*\))+)"""
 TITLE = r"""(?:\s+(?:"[^"\n]*"|'[^'\n]*'|\([^()\n]*\)))?"""
 INLINE_RE = re.compile(r"\[[^\]\n]+\]\(\s*(" + DEST + r")" + TITLE + r"\s*\)")
@@ -107,7 +106,6 @@ def prose_only(text: str) -> str:
     prose = re.sub(r"<!--.*?-->", "", "\n".join(lines), flags=re.S)
 
     def inline_code(match: re.Match) -> str:
-        # A code-formatted link label is still a live link.
         if prose[match.start() - 1:match.start()] == "[" and prose[match.end():match.end() + 1] == "]":
             return match.group(2)
         return ""
@@ -194,7 +192,10 @@ def validate(root: Path) -> tuple[list[str], dict[str, int]]:
             if fm.get("type") in LIFECYCLE_TYPES:
                 errors.append(f"{label}: type must describe the work; put lifecycle in the body")
             if fm.get("id"):
-                task_ids.add(fm["id"])
+                if fm["id"] in RESERVED_TASK_REFS:
+                    errors.append(f"{label}: reserved Task ID: {fm['id']}")
+                else:
+                    task_ids.add(fm["id"])
         if is_run:
             counts["runs"] += 1
             if fm.get("task"):
@@ -214,7 +215,7 @@ def validate(root: Path) -> tuple[list[str], dict[str, int]]:
                 errors.append(f"{label}: duplicate id {ident}: {ids[ident].relative_to(root)}")
             ids[ident] = md
     for label, task in run_tasks:
-        if task != "direct-request" and task not in task_ids:
+        if task not in RESERVED_TASK_REFS and task not in task_ids:
             errors.append(f"{label}: unknown task ID: {task}")
     if (root / "registry.json").exists():
         errors.append("registry.json is outside the starter layout; update the validator and move duplicated allocation metadata when introducing it")
