@@ -3,6 +3,7 @@
 
 Metadata uses the documented one-line subset, not a general YAML parser.
 Links check local file existence, not URL availability or heading anchors.
+Run ``task`` metadata may contain comma-separated Task IDs.
 """
 from __future__ import annotations
 
@@ -73,6 +74,20 @@ def parse_frontmatter(text: str) -> dict[str, str]:
             except ValueError as exc:
                 raise ValueError(f"{key}: {exc}") from exc
     return out
+
+
+def parse_run_task_refs(value: str) -> list[str]:
+    """Parse the intentionally simple comma-separated Run task field."""
+    refs = [item.strip() for item in value.split(",")]
+    if not refs or any(not item for item in refs):
+        raise ValueError("task must contain non-empty comma-separated Task IDs")
+    for item in refs:
+        if not TOKEN_RE.fullmatch(item):
+            raise ValueError(
+                "task entries must use letters, digits, hyphens or underscores; "
+                "separate multiple entries with commas"
+            )
+    return refs
 
 
 def prose_only(text: str) -> str:
@@ -183,7 +198,12 @@ def validate(root: Path) -> tuple[list[str], dict[str, int]]:
         if is_run:
             counts["runs"] += 1
             if fm.get("task"):
-                run_tasks.append((label, fm["task"]))
+                try:
+                    refs = parse_run_task_refs(fm["task"])
+                except ValueError as exc:
+                    errors.append(f"{label}: task: {exc}")
+                else:
+                    run_tasks.extend((label, ref) for ref in refs)
         for key in ("id", "run_id"):
             if key not in fm:
                 continue
