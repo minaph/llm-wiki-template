@@ -121,12 +121,45 @@ class ValidationTests(unittest.TestCase):
 
     def test_run_metadata_and_task_reference(self):
         run = self.root / "runs/one.md"
+        editorial = self.root / "tasks/editorial.md"
+        editorial.write_text(
+            TASK.replace("id: CHECK-ONE", "id: WIKI-EDITORIAL-QUALITY").replace(
+                "type: verification", "type: editorial"),
+            encoding="utf-8",
+        )
+
         run.write_text("---\nrun_id: RUN-ONE\ntask: CHECK-ONE\nexecutor: local\n---\n", encoding="utf-8")
         self.assertEqual(validate(self.root)[0], [])
+
         run.write_text("---\nrun_id: RUN-ONE\ntask: direct-request\nexecutor: local\n---\n", encoding="utf-8")
         self.assertEqual(validate(self.root)[0], [])
-        run.write_text("---\nrun_id: RUN-ONE\ntask: MISSING\nexecutor: local\n---\n", encoding="utf-8")
-        self.check_errors("unknown task ID")
+
+        run.write_text(
+            "---\nrun_id: RUN-ONE\ntask: direct-request, CHECK-ONE, WIKI-EDITORIAL-QUALITY\nexecutor: local\n---\n",
+            encoding="utf-8",
+        )
+        self.assertEqual(validate(self.root)[0], [])
+
+        run.write_text(
+            "---\nrun_id: RUN-ONE\ntask: CHECK-ONE, CHECK-ONE, WIKI-EDITORIAL-QUALITY\nexecutor: local\n---\n",
+            encoding="utf-8",
+        )
+        self.assertEqual(validate(self.root)[0], [])
+
+        run.write_text(
+            "---\nrun_id: RUN-ONE\ntask: CHECK-ONE, MISSING, WIKI-EDITORIAL-QUALITY\nexecutor: local\n---\n",
+            encoding="utf-8",
+        )
+        self.check_errors("unknown task ID: MISSING")
+
+        for malformed in ("CHECK-ONE,", "CHECK-ONE, , WIKI-EDITORIAL-QUALITY", ",CHECK-ONE"):
+            with self.subTest(task=malformed):
+                run.write_text(
+                    f"---\nrun_id: RUN-ONE\ntask: {malformed}\nexecutor: local\n---\n",
+                    encoding="utf-8",
+                )
+                self.check_errors("non-empty comma-separated Task IDs")
+
         run.write_text("---\nrun_id: RUN-ONE\ntask: CHECK-ONE\n---\n", encoding="utf-8")
         self.check_errors("required metadata missing: executor")
 
