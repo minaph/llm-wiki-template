@@ -73,6 +73,10 @@ class ValidationTests(unittest.TestCase):
             "type: verification", "type: migration"), encoding="utf-8")
         self.assertEqual(validate(self.root)[0], [])
 
+    def test_reserved_direct_request_task_id_fails(self):
+        self.task.write_text(TASK.replace("id: CHECK-ONE", "id: direct-request"), encoding="utf-8")
+        self.check_errors("reserved Task ID: direct-request")
+
     def test_duplicate_actual_ids_fail(self):
         (self.root / "wiki/duplicate.md").write_text("---\nid: CHECK-ONE\n---\n", encoding="utf-8")
         self.check_errors("duplicate id")
