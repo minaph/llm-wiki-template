@@ -1,6 +1,6 @@
 # Task一覧
 
-Taskは、これから行う作業の目的・根拠・行為・完了条件を定める文書である。初期版は手動で選択する。メタデータの意味、Task Formation、2Slot+Eの選択方法は [Taskの運用](../TASK_SYSTEM.md) を参照する。
+Taskは、これから行う作業の目的・根拠・行為・完了条件を定める文書である。初期版は手動で選択する。メタデータの意味、Taskの形成、2Slot+Eの選択方法は [Taskの運用](../TASK_SYSTEM.md) を参照する。
 
 人間の明示的要求はまず [TODO](../TODO.md) で現在状態を追跡する。TODO項目を自動的にTaskへ変換せず、既存Taskの一部、単発Task、集中Task、条件付きTask、常設Task、直接作業、Task化しない判断から適切な形成先を選ぶ。
 
@@ -16,6 +16,6 @@ Taskは、これから行う作業の目的・根拠・行為・完了条件を�
 
 標準起動ではWork 1とWork 2を別々に選ぶ。直接の人間依頼はWork 1に置き、Work 2はTask一覧とTODOをもう一度見て、別の問い・根拠面・判断差を持つ作業を選ぶ。同じTaskを二枠に選ぶ場合も、単なる再包装になっていないことを確認する。
 
-文章を変更したTaskは、そのWork内で読み直しまで行う。Slot Eはその成果物を再校正するのではなく、`WIKI-EDITORIAL-QUALITY` を実行してWork 1 / Work 2から十分に離れた既存Wiki Entryを独立に点検する。これにより局所的なattentionとは別にWiki内部品質を継続保守する。
+文章を変更したTaskは、そのWork内で読み直しまで行う。Slot Eはその成果物を再校正するのではなく、`WIKI-EDITORIAL-QUALITY` を実行してWork 1 / Work 2から十分に離れた既存Wiki Entryを独立に点検する。これにより今回の作業対象に限らずWiki内部品質を継続保守する。
 
 検証を実行する場合も [Taskテンプレート](_TEMPLATE.md) を使い、`type: verification` とする。単発・常設などの存続形態と終了・停止・再開条件は本文に書く。検証結果と設計判断はWiki、実行ログ・作業過程・Run-level contribution claimはRun Noteに記録する。

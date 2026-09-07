@@ -11,7 +11,7 @@ required_capabilities: [task-read, run-history, doc-edit]
 
 ## 目的
 
-繰り返される運用上の問題が、TODOからのTask Formation、Taskの書き方、2Slotの選択、Editorial対象選択、引継ぎ、claimの記録、情報の整理方法のどこから生じているかを調べる。対象を絞って、元に戻せる改善を試す。
+繰り返される運用上の問題が、TODOを基にしたTaskの形成、Taskの書き方、2Slotの選択、Editorial対象選択、引継ぎ、claimの記録、情報の整理方法のどこから生じているかを調べる。対象を絞って、元に戻せる改善を試す。
 
 ## 起動条件
 
@@ -21,11 +21,11 @@ required_capabilities: [task-read, run-history, doc-edit]
 - Work 1の成果がそのままWork 2の対象を生成し、二枠が恒常的に直列工程になる。
 - Slot EがWork 1 / Work 2の成果物ばかり再読し、独立品質管理として機能しない。
 - Slot Eが同じ少数Wiki Entryへ集中し、長く再読されない重要文書が残る。
-- Eで発見した大きな問題をその場で無制限に調査し、第三のsubstantive Workへ膨張する。
-- [TODO](../TODO.md) に明示的な人間要望が残る一方、Task Formationや状態更新が行われない。
+- Eで発見した大きな問題をその場で無制限に調査し、第三の実作業へ膨張する。
+- [TODO](../TODO.md) に明示的な人間要望が残る一方、Taskの形成や状態更新が行われない。
 - 検証の引継ぎが滞留する、または実行結果がWikiへ戻らない。
 - Run-level contribution claimが作業内容の要約だけになり、Wiki Entry-level claimとの差分を示さない。
-- Run Noteの `task` metadataと本文のWork 1 / Work 2 / Eの実行内容が一致しない。
+- Run Noteの `task` メタデータと本文のWork 1 / Work 2 / Eの実行内容が一致しない。
 - ファイル参照やSUPPORT件数が妥当性や成果の代理指標として使われ始める。
 - Task文書やWikiが長大化し、中心主張と根拠を復元しにくくなる。
 
@@ -39,7 +39,7 @@ required_capabilities: [task-read, run-history, doc-edit]
 
 2Slotの偏りを調べる場合は、単純な選択回数だけでなく、`最終露出 / その時点の具体的な問い / 情報利得 / 開始コスト / 直前文脈からの再開しやすさ` を見る。短期集中だけから飢餓を宣言しない。
 
-Editorial laneを調べる場合は、Work主題との距離、対象Entryの最終再読時期、参照頻度、文書規模、staleness signal、実質的な修正またはno-change判断を分けて見る。Eの編集件数を品質の代理にしない。
+編集点検の枠を調べる場合は、Work主題との距離、対象Entryの最終再読時期、参照頻度、文書規模、記述が古くなった兆候、実質的な修正または変更不要の判断を分けて見る。Eの編集件数を品質の代理にしない。
 
 claim運用を調べる場合は、ファイル・Run・姿勢ラベルではなく、後続者が個別に支持・懐疑できる対象命題を確認する。後続再利用の深さとclaimの妥当性を同じ尺度へ潰さない。
 

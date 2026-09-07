@@ -43,6 +43,23 @@ class ValidationTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(counts, {"tasks": 1, "runs": 0, "ids": 1})
 
+    def test_git_metadata_is_excluded_from_layout_and_documents(self):
+        for parent in (self.root, self.root / "wiki"):
+            git_dir = parent / ".git"
+            git_dir.mkdir()
+            (git_dir / "invalid.md").write_text(
+                "---\nid: CHECK-ONE\n---\n[Broken](missing.md)\n", encoding="utf-8"
+            )
+        errors, counts = validate(self.root)
+        self.assertEqual(errors, [])
+        self.assertEqual(counts, {"tasks": 1, "runs": 0, "ids": 1})
+
+    def test_git_file_is_allowed_but_other_hidden_directories_are_rejected(self):
+        (self.root / ".git").write_text("gitdir: /outside/worktree\n", encoding="utf-8")
+        self.assertEqual(validate(self.root)[0], [])
+        (self.root / ".cache").mkdir()
+        self.check_errors("unexpected top-level directory: .cache")
+
     def test_missing_and_empty_required_values_fail(self):
         for key in ("id", "type", "status", "priority", "trigger", "required_capabilities"):
             line = next(line for line in TASK.splitlines() if line.startswith(key + ":"))

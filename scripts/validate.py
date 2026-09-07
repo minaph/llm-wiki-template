@@ -7,6 +7,7 @@ Run ``task`` metadata may contain comma-separated Task IDs.
 """
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -147,9 +148,13 @@ def validate(root: Path) -> tuple[list[str], dict[str, int]]:
     if not root.is_dir():
         return errors, counts
     for child in sorted(root.iterdir()):
-        if child.is_dir() and child.name not in ALLOWED_TOP_DIRS:
+        if child.is_dir() and child.name not in ALLOWED_TOP_DIRS | {".git"}:
             errors.append(f"unexpected top-level directory: {child.name}; update the documented layout and validator if intentional")
-    for md in sorted(root.rglob("*.md")):
+    documents = []
+    for directory, subdirs, files in os.walk(root):
+        subdirs[:] = [name for name in subdirs if name != ".git"]
+        documents.extend(Path(directory) / name for name in files if name.endswith(".md"))
+    for md in sorted(documents):
         relative = md.relative_to(root)
         label = str(relative)
         try:
