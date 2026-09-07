@@ -121,6 +121,10 @@ task: direct-request, DESIGN-MAINTENANCE, WIKI-EDITORIAL-QUALITY
 
 プロジェクトルートの `AGENTS.md` 等には、「継続的な設計・検証・コード再点検を行う前に `llm_wiki/README.md` と `llm_wiki/TODO.md` を読む」と記せばよい。
 
+## コミットメッセージ
+
+ユーザーの直接指示によらない通常のLLM Wiki更新をコミットする場合は、コミットメッセージの先頭に必ず `wiki:` を付ける。例：`wiki: 設計判断の根拠を更新`。ユーザーの直接指示に基づく更新には、この接頭辞を必須としない。 詳細は[Taskの運用](TASK_SYSTEM.md#コミットメッセージ)を参照する。
+
 ## 検査の範囲
 
 検査は完成時に行い、参照切れと必須メタデータの記入不足をエラーにする。下書き用の例外は設けない。配布用の `_TEMPLATE.md` は実際のTaskやRunとして数えないが、リンクは検査する。
